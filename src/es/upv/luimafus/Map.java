@@ -57,6 +57,11 @@ public class Map {
     }
 
     public boolean canMove(int x, int y) {
+
+        for(Player p : players) {
+            if(p.getX() == x && p.getY() == y)
+                return false;
+        }
         return map[x][y] == 0;
     }
 }
