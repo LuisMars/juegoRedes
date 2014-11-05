@@ -40,7 +40,7 @@ public class Map {
                     }
                 if(j == map.length)
                     continue;
-                res += (map[j][i] == 1 ? "#" : ".");
+                res += (map[j][i] == 1 ? "." : " ");
                 res += " ";
             }
             res += "\n";

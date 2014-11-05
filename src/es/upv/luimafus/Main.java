@@ -21,7 +21,7 @@ public class Main {
         while (true) {
             //System.out.println(map);
             c.show(map.toString());
-            c.add("Where to move player " + map.cPlayer.getID() + "? ");
+            //c.add("Where to move player " + map.cPlayer.getID() + "? ");
             Thread.sleep(500);
         }
     }
