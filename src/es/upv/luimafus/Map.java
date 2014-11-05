@@ -7,8 +7,9 @@ import java.util.List;
  * Created by Luis on 01/11/2014.
  */
 public class Map {
-    private int[][] map;
-    private List<Player> players = new ArrayList<Player>();
+    private static int[][] map;
+    private static List<Player> players = new ArrayList<Player>();
+    public static Player cPlayer;
 
     public Map(int h, int w, double density) {
         map = new int[h][w];
@@ -25,6 +26,7 @@ public class Map {
 
     public void addPlayer(Player p) {
         players.add(p);
+        cPlayer = players.iterator().next();
     }
 
     public String toString() {
@@ -36,6 +38,8 @@ public class Map {
                         res += p.getID() + " ";
                         j++;
                     }
+                if(j == map.length)
+                    continue;
                 res += (map[j][i] == 1 ? "#" : ".");
                 res += " ";
             }
@@ -56,12 +60,27 @@ public class Map {
         return players;
     }
 
-    public boolean canMove(int x, int y) {
+    public void movePlayer(Player p, int x, int y) {
+        if(canMove(x, y))
+            p.moveTo(x,y);
+    }
 
+    public boolean canMove(int x, int y) {
         for(Player p : players) {
             if(p.getX() == x && p.getY() == y)
                 return false;
         }
+        if(x < 0 || y < 0 || x >= map.length || y >= map[0].length)
+            return false;
         return map[x][y] == 0;
+    }
+
+    public static void move(char c) {
+        cPlayer.move(c);
+        cPlayer = nextPlayer();
+    }
+
+    public static Player nextPlayer() {
+        return players.get((players.indexOf(cPlayer)+1)%players.size());
     }
 }

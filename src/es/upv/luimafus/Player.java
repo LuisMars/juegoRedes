@@ -7,6 +7,18 @@ public class Player {
 
     private int x;
     private int y;
+
+    private int HP = 100;
+    private int currentHP = 100;
+
+    private int defense = 20;
+
+    private int attack = 20;
+
+    private int shooting = 20;
+
+    private int magic = 20;
+
     private Map map;
 
     private String ID;
@@ -21,8 +33,8 @@ public class Player {
     }
 
     private void setStartPos(Map map) {
-        x = (int) (Math.random() * map.getWidth()) + 1;
-        y = (int) (Math.random() * map.getHeight()) + 1;
+        x = (int) (Math.random() * map.getWidth());
+        y = (int) (Math.random() * map.getHeight());
     }
 
     public void move(char c) {
@@ -47,11 +59,12 @@ public class Player {
                 break;
             }
         }
-        if (map.canMove(pX, pY)) {
-            x = pX;
-            y = pY;
-        }
+        map.movePlayer(this, pX, pY);
+    }
 
+    public void moveTo(int x, int y) {
+        this.x = x;
+        this.y = y;
     }
 
     public int getX() {
