@@ -1,7 +1,6 @@
 package es.upv.luimafus;
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -41,7 +40,7 @@ public class Console extends JFrame implements KeyListener {
     public void keyPressed(KeyEvent e) {
         if(e.getKeyChar() == 'q')
             System.exit(0);
-        Map.move(e.getKeyChar());
+        Map.act(e);
     }
 
     @Override

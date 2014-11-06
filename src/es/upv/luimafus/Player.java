@@ -1,5 +1,7 @@
 package es.upv.luimafus;
 
+import java.awt.event.KeyEvent;
+
 /**
  * Created by Luis on 01/11/2014.
  */
@@ -8,16 +10,14 @@ public class Player {
     private int x;
     private int y;
 
-    private int HP = 100;
-    private int currentHP = 100;
+    private int reloadTime = 2;
 
-    private int defense = 20;
+    private int lastAtt = 0;
 
-    private int attack = 20;
 
-    private int shooting = 20;
+    private int lastDir = 0;
 
-    private int magic = 20;
+    private Area area = new Area();
 
     private Map map;
 
@@ -44,22 +44,37 @@ public class Player {
         switch (c) {
             case 'w': {
                 pY--;
+                lastDir = 0;
                 break;
             }
             case 's': {
                 pY++;
+                lastDir = 2;
                 break;
             }
             case 'd': {
                 pX++;
+                lastDir = 1;
                 break;
             }
             case 'a': {
                 pX--;
+                lastDir = 3;
                 break;
             }
         }
         map.movePlayer(this, pX, pY);
+    }
+
+    public void attack(int direction) {
+        if((int)(System.currentTimeMillis()/100) - lastAtt > reloadTime) {
+
+            lastAtt = (int)(System.currentTimeMillis()/100);
+            if(direction == -1)
+                area = new Area(x, y);
+            else
+                Map.addAttack(new Attack(x, y, direction));
+        }
     }
 
     public void moveTo(int x, int y) {
@@ -77,5 +92,9 @@ public class Player {
 
     public String getID() {
         return ID;
+    }
+
+    public void updateArea() {
+        area.updatePos();
     }
 }

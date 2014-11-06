@@ -1,6 +1,8 @@
 package es.upv.luimafus;
 
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -9,6 +11,7 @@ import java.util.List;
 public class Map {
     private static int[][] map;
     private static List<Player> players = new ArrayList<Player>();
+    private static Collection<Attack> attacks = new ArrayList<Attack>();
     public static Player cPlayer;
 
     public Map(int h, int w, double density) {
@@ -29,30 +32,52 @@ public class Map {
         cPlayer = players.iterator().next();
     }
 
+    public static void addAttack(Attack a) {
+        attacks.add(a);
+    }
+
     public String toString() {
         String res = "";
+        String cell;
+
+        for (Player p : players)
+            p.updateArea();
+
+        for (Attack a: attacks) {
+            a.updatePos();
+        }
+
         for (int i = 0; i < map[i].length; i++) {
             for (int j = 0; j < map.length; j++) {
+                cell = "";
                 for (Player p : players)
                     if (p.getX() == j && p.getY() == i) {
-                        res += p.getID() + " ";
-                        j++;
+                        cell = p.getID() + " ";
                     }
-                if(j == map.length)
-                    continue;
-                res += (map[j][i] == 1 ? "." : " ");
-                res += " ";
+
+                for (Attack a: attacks) {
+                    if (!a.isOver() && a.getX() == j && a.getY() == i) {
+                        if (map[j][i] == 1) {
+                            a.kill();
+                        }
+                        cell = a.getID() + " ";
+                    }
+                }
+                if(cell.isEmpty())
+                    cell = (map[j][i] == 1 ? "· " : "  ");
+                res += cell;
             }
             res += "\n";
         }
+        attacks.removeIf(Attack::isOver);
         return res;
     }
 
-    public int getWidth() {
+    public static int getWidth() {
         return map.length;
     }
 
-    public int getHeight() {
+    public static int getHeight() {
         return map[0].length;
     }
 
@@ -75,12 +100,19 @@ public class Map {
         return map[x][y] == 0;
     }
 
-    public static void move(char c) {
-        cPlayer.move(c);
+    public static void act(KeyEvent e) {
+        if(e.getKeyChar() == ' ')
+            cPlayer.attack(-1);
+        else if(!e.isActionKey())
+            cPlayer.move(e.getKeyChar());
+        else
+            cPlayer.attack(e.getKeyCode());
         cPlayer = nextPlayer();
     }
 
     public static Player nextPlayer() {
         return players.get((players.indexOf(cPlayer)+1)%players.size());
     }
+
+
 }
