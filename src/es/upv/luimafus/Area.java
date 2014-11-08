@@ -1,25 +1,22 @@
 package es.upv.luimafus;
 
-import java.util.ArrayList;
-import java.util.List;
 
-/**
- * Created by Luis on 06/11/2014.
- */
 public class Area {
     private int px;
     private int py;
     private int time;
-    private int radius = 10;
+    private int radius = 3;
+    private char father;
 
     public Area () {
         time = -1;
     }
 
-    public Area (int x, int y) {
+    public Area (int x, int y, char ID) {
         px = x;
         py = y;
         time = radius;
+        father = ID;
     }
 
     public void updatePos() {
@@ -27,7 +24,7 @@ public class Area {
             for (int i = 0; i < Map.getHeight(); i++) {
                 for (int j = 0; j < Map.getWidth(); j++) {
                     if (distance(j, i, px, py) == radius - time)
-                        Map.addAttack(new Attack(j, i));
+                        Map.addAttack(new Attack(j, i, father));
                 }
             }
         }

@@ -1,40 +1,34 @@
 package es.upv.luimafus;
 
-import java.awt.event.KeyEvent;
-
-/**
- * Created by Luis on 01/11/2014.
- */
 public class Player {
+
 
     private int x;
     private int y;
 
-    private int reloadTime = 2;
-
     private int lastAtt = 0;
 
-
-    private int lastDir = 0;
+    private int HP = 10;
+    private int cHP = HP;
 
     private Area area = new Area();
 
-    private Map map;
 
-    private String ID;
+    private char ID;
 
     private static int n_players = 0;
 
-    public Player(Map map) {
-        this.map = map;
-        setStartPos(map);
+    public Player() {
+        setStartPos();
         n_players++;
-        ID = "" + (char) (n_players - 1 + 'A');
+        ID = (char)(n_players - 1 + 'A');
     }
 
-    private void setStartPos(Map map) {
-        x = (int) (Math.random() * map.getWidth());
-        y = (int) (Math.random() * map.getHeight());
+    private void setStartPos() {
+        while (Map.getCell(x, y) != 0) {
+            x = (int) (Math.random() * Map.getWidth());
+            y = (int) (Math.random() * Map.getHeight());
+        }
     }
 
     public void move(char c) {
@@ -44,36 +38,33 @@ public class Player {
         switch (c) {
             case 'w': {
                 pY--;
-                lastDir = 0;
                 break;
             }
             case 's': {
                 pY++;
-                lastDir = 2;
                 break;
             }
             case 'd': {
                 pX++;
-                lastDir = 1;
                 break;
             }
             case 'a': {
                 pX--;
-                lastDir = 3;
                 break;
             }
         }
-        map.movePlayer(this, pX, pY);
+        Map.movePlayer(this, pX, pY);
     }
 
     public void attack(int direction) {
+        int reloadTime = 2;
         if((int)(System.currentTimeMillis()/100) - lastAtt > reloadTime) {
 
             lastAtt = (int)(System.currentTimeMillis()/100);
             if(direction == -1)
-                area = new Area(x, y);
+                area = new Area(x, y, ID);
             else
-                Map.addAttack(new Attack(x, y, direction));
+                Map.addAttack(new Attack(x, y, direction, ID));
         }
     }
 
@@ -90,11 +81,19 @@ public class Player {
         return y;
     }
 
-    public String getID() {
+    public char getID() {
         return ID;
     }
 
     public void updateArea() {
         area.updatePos();
+    }
+
+    public String getHP() {
+        return ID + ": " + cHP + "(" + HP + ")";
+    }
+
+    public void hit(int damage) {
+        cHP = Math.max(0, cHP-damage);
     }
 }

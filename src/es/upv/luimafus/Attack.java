@@ -1,26 +1,29 @@
 package es.upv.luimafus;
 
-/**
- * Created by Luis on 05/11/2014.
- */
 public class Attack {
     protected int x;
     protected int y;
     protected int time;
     protected int direction;
+    protected int damage;
+    protected char father;
 
-    public Attack(int x, int y) {
+    public Attack(int x, int y, char ID) {
         this.x = x;
         this.y = y;
+        this.father = ID;
         direction = -1;
-        time = 4;
+        time = 3;
+        damage = 1;
     }
 
-    public Attack(int x, int y, int dir) {
+    public Attack(int x, int y, int dir, char ID) {
         this.x = x;
         this.y = y;
+        this.father = ID;
         direction = (dir-34)%4;
-        time = 10;
+        time = 5;
+        damage = 2;
     }
 
     public void updatePos() {
@@ -68,5 +71,13 @@ public class Attack {
 
     public boolean isOver() {
         return time < 0;
+    }
+
+    public int getDamage() {
+        return damage;
+    }
+
+    public char getFather() {
+        return father;
     }
 }

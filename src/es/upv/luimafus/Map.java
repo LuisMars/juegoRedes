@@ -5,13 +5,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-/**
- * Created by Luis on 01/11/2014.
- */
 public class Map {
     private static int[][] map;
-    private static List<Player> players = new ArrayList<Player>();
-    private static Collection<Attack> attacks = new ArrayList<Attack>();
+    private static List<Player> players = new ArrayList<>();
+    private static Collection<Attack> attacks = new ArrayList<>();
     public static Player cPlayer;
 
     public Map(int h, int w, double density) {
@@ -26,8 +23,9 @@ public class Map {
             }
         }
         double area = getHeight() * getWidth() * density;
-        area = Math.min(area, (getHeight() * getWidth()) - (getHeight()+getWidth())*2 + 4);
+        area = Math.min(area, (getHeight() * getWidth()) - (getHeight() + getWidth()) * 2 + 4);
         double covered = 0;
+
         while (area > covered) {
 
             int iy = (int)(Math.random() * getWidth());
@@ -39,8 +37,10 @@ public class Map {
             int fx = 0;
             while (fx < ix)
                 fx = (int)(Math.random() * getHeight());
+            //TODO: i < f
 
             boolean overlaps = false;
+
             for (int i = ix; i < fx; i++) {
                 for (int j = iy; j < fy; j++) {
                     if(map[j][i] == 0)
@@ -99,6 +99,12 @@ public class Map {
                         if (map[j][i] == 1) {
                             a.kill();
                         }
+                        for(Player p : players) {
+                            if(p.getX() == a.getX() && p.getY() == a.getY() && p.getID() != a.getFather()) {
+                                a.kill();
+                                p.hit(a.getDamage());
+                            }
+                        }
                         cell = a.getID() + " ";
                     }
                 }
@@ -108,6 +114,9 @@ public class Map {
             }
             res += "\n";
         }
+        for(Player p : players)
+            res += p.getHP() + "\n";
+
         attacks.removeIf(Attack::isOver);
         return res;
     }
@@ -120,23 +129,17 @@ public class Map {
         return map[0].length;
     }
 
-    public List<Player> getPlayers() {
-        return players;
-    }
-
-    public void movePlayer(Player p, int x, int y) {
+    public static void movePlayer(Player p, int x, int y) {
         if(canMove(x, y))
             p.moveTo(x,y);
     }
 
-    public boolean canMove(int x, int y) {
+    public static boolean canMove(int x, int y) {
         for(Player p : players) {
             if(p.getX() == x && p.getY() == y)
                 return false;
         }
-        if(x < 0 || y < 0 || x >= map.length || y >= map[0].length)
-            return false;
-        return map[x][y] == 0;
+        return !(x < 0 || y < 0 || x >= map.length || y >= map[0].length) && map[x][y] == 0;
     }
 
     public static void act(KeyEvent e) {
@@ -153,5 +156,7 @@ public class Map {
         return players.get((players.indexOf(cPlayer)+1)%players.size());
     }
 
-
+    public static int getCell(int x, int y) {
+        return map[x][y];
+    }
 }
