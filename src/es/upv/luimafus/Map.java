@@ -20,12 +20,13 @@ public class Map {
     }
 
     public void generateMap(double density) {
-        for (int i = 0; i < map[i].length; i++) {
-            for (int j = 0; j < map.length; j++) {
+        for (int i = 0; i < getHeight(); i++) {
+            for (int j = 0; j < getWidth(); j++) {
                 map[j][i] = 1;
             }
         }
         double area = getHeight() * getWidth() * density;
+        area = Math.min(area, (getHeight() * getWidth()) - (getHeight()+getWidth())*2 + 4);
         double covered = 0;
         while (area > covered) {
 
@@ -56,13 +57,12 @@ public class Map {
                 }
             }
             covered = 0;
-            for (int i = 0; i < map[i].length; i++) {
-                for (int j = 0; j < map.length; j++) {
+            for (int i = 0; i < getHeight(); i++) {
+                for (int j = 0; j < getWidth(); j++) {
                     if(map[j][i] == 0)
                         covered++;
                 }
             }
-            System.out.println("Area: " + area + " Covered: " + covered);
         }
     }
 
@@ -86,8 +86,8 @@ public class Map {
             a.updatePos();
         }
 
-        for (int i = 0; i < map[i].length; i++) {
-            for (int j = 0; j < map.length; j++) {
+        for (int i = 0; i < getHeight(); i++) {
+            for (int j = 0; j < getWidth(); j++) {
                 cell = "";
                 for (Player p : players)
                     if (p.getX() == j && p.getY() == i) {
