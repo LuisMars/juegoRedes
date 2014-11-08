@@ -1,6 +1,7 @@
 package es.upv.luimafus;
 
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
@@ -14,13 +15,21 @@ public class Console extends JFrame implements KeyListener {
     public Console() {
         setVisible(true);
         setContentPane(Panel);
-        setLocationRelativeTo(null);
+
         pack();
         setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
 
         show.addKeyListener(this);
         show.grabFocus();
 
+    }
+
+    public void putSize(int x, int y) {
+        setSize(x*21,y*19);
+        Panel.setSize(x*21, y*19);
+        show.setSize(x*21, y*19);
+
+        setLocationRelativeTo(null);
     }
 
     public void show(String s) {

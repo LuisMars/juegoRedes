@@ -22,8 +22,47 @@ public class Map {
     public void generateMap(double density) {
         for (int i = 0; i < map[i].length; i++) {
             for (int j = 0; j < map.length; j++) {
-                map[j][i] = Math.random() < density ? 1 : 0;
+                map[j][i] = 1;
             }
+        }
+        double area = getHeight() * getWidth() * density;
+        double covered = 0;
+        while (area > covered) {
+
+            int iy = (int)(Math.random() * getWidth());
+            int fy = 0;
+            while (fy < iy)
+                fy = (int)(Math.random() * getWidth());
+
+            int ix = (int)(Math.random() * getHeight());
+            int fx = 0;
+            while (fx < ix)
+                fx = (int)(Math.random() * getHeight());
+
+            boolean overlaps = false;
+            for (int i = ix; i < fx; i++) {
+                for (int j = iy; j < fy; j++) {
+                    if(map[j][i] == 0)
+                        overlaps = true;
+                }
+            }
+
+            if(overlaps)
+                continue;
+
+            for (int i = ix; i < fx; i++) {
+                for (int j = iy; j < fy; j++) {
+                    map[j][i] = 0;
+                }
+            }
+            covered = 0;
+            for (int i = 0; i < map[i].length; i++) {
+                for (int j = 0; j < map.length; j++) {
+                    if(map[j][i] == 0)
+                        covered++;
+                }
+            }
+            System.out.println("Area: " + area + " Covered: " + covered);
         }
     }
 
