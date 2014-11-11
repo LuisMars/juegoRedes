@@ -23,14 +23,16 @@ public class Area {
         if(--time >= 0) {
             for (int i = 0; i < Map.getHeight(); i++) {
                 for (int j = 0; j < Map.getWidth(); j++) {
-                    if (distance(j, i, px, py) == radius - time)
+                    if (Utils.distance(j, i, px, py) == radius - time)
                         Map.addAttack(new Attack(j, i, father));
                 }
             }
         }
     }
 
-    public int distance(int x, int y, int px, int py) {
-        return (int)Math.round(Math.sqrt((x-px)*(x-px)+(y-py)*(y-py)));
+    public boolean isOver() {
+        return time <= 0;
     }
+
+
 }

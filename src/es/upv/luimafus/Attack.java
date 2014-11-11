@@ -21,9 +21,9 @@ public class Attack {
         this.x = x;
         this.y = y;
         this.father = ID;
-        direction = (dir-34)%4;
-        time = 5;
-        damage = 2;
+        direction = dir;
+        time = 10;
+        damage = 3;
     }
 
     public void updatePos() {

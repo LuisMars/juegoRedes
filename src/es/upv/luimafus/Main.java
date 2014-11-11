@@ -1,5 +1,4 @@
 package es.upv.luimafus;
-
 public class Main {
 
     public static void main(String[] args) throws InterruptedException {
@@ -12,12 +11,14 @@ public class Main {
         Map map = new Map(w, h, 0.70);
         c.add("Generating map...");
         c.putSize(w, h);
-        map.addPlayer(new Player());
+        map.addPlayer(new Player(false));
 
-        //wqmap.addPlayer(new Player());
+        for (int i = 0; i < 4; i++)
+            map.addPlayer(new Player(true));
+
         while (true) {
             c.show(map.toString());
-            Thread.sleep(100);
+            Thread.sleep(170);
         }
 
     }

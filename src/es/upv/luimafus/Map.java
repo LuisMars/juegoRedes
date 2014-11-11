@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+
 public class Map {
     private static int[][] map;
     private static List<Player> players = new ArrayList<>();
@@ -14,6 +15,7 @@ public class Map {
     public Map(int h, int w, double density) {
         map = new int[h][w];
         generateMap(density);
+
     }
 
     public void generateMap(double density) {
@@ -79,8 +81,13 @@ public class Map {
         String res = "";
         String cell;
 
-        for (Player p : players)
+        for (Player p : players) {
             p.updateArea();
+            if(p.isBot())
+                p.botMove(closestTo(p));
+            else
+                p.act();
+        }
 
         for (Attack a: attacks) {
             a.updatePos();
@@ -89,10 +96,7 @@ public class Map {
         for (int i = 0; i < getHeight(); i++) {
             for (int j = 0; j < getWidth(); j++) {
                 cell = "";
-                for (Player p : players)
-                    if (p.getX() == j && p.getY() == i) {
-                        cell = p.getID() + " ";
-                    }
+
 
                 for (Attack a: attacks) {
                     if (!a.isOver() && a.getX() == j && a.getY() == i) {
@@ -108,6 +112,10 @@ public class Map {
                         cell = a.getID() + " ";
                     }
                 }
+                for (Player p : players)
+                    if (p.getX() == j && p.getY() == i) {
+                        cell = p.getID() + " ";
+                    }
                 if(cell.isEmpty())
                     cell = (map[j][i] == 1 ? "· " : "  ");
                 res += cell;
@@ -116,7 +124,7 @@ public class Map {
         }
         for(Player p : players)
             res += p.getHP() + "\n";
-
+        players.removeIf(Player::isDead);
         attacks.removeIf(Attack::isOver);
         return res;
     }
@@ -143,20 +151,41 @@ public class Map {
     }
 
     public static void act(KeyEvent e) {
-        if(e.getKeyChar() == ' ')
-            cPlayer.attack(-1);
-        else if(!e.isActionKey())
-            cPlayer.move(e.getKeyChar());
-        else
-            cPlayer.attack(e.getKeyCode());
-        cPlayer = nextPlayer();
+        for(Player p: players) {
+            if (!p.isBot()) {
+                if (e.getKeyChar() == ' ')
+                    p.setAction(8);
+                else if (!e.isActionKey())
+                    p.setAction(e.getKeyChar());
+                else
+                    p.setAction(e.getKeyCode());
+            }
+        }
     }
 
     public static Player nextPlayer() {
-        return players.get((players.indexOf(cPlayer)+1)%players.size());
+        return nextTo(cPlayer);
+    }
+    private static Player nextTo(Player p) {
+        return players.get((players.indexOf(p)+1)%players.size());
     }
 
     public static int getCell(int x, int y) {
         return map[x][y];
+    }
+
+    public Player closestTo(Player p) {
+        Player g = nextTo(p);
+        int min = 99999;
+        for(Player e: players) {
+            if(e != p) {
+                int dist = Utils.distance(e,p);
+                if(dist > min) {
+                    min = dist;
+                    g = e;
+                }
+            }
+        }
+        return g;
     }
 }
